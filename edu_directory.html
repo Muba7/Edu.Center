@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduTJ — Find Your Course</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #F7F5F0;
+    --card: #FFFFFF;
+    --text: #1A1A1A;
+    --text-sub: #6B6560;
+    --accent: #2D6A4F;
+    --accent-light: #D8F3DC;
+    --accent-dark: #1B4332;
+    --border: #E8E4DE;
+    --tag-bg: #F0EDE8;
+    --shadow: 0 2px 16px rgba(0,0,0,0.06);
+    --shadow-hover: 0 8px 32px rgba(0,0,0,0.1);
+    --radius: 14px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: var(--accent-dark);
+    letter-spacing: -0.5px;
+  }
+  .logo span { color: var(--accent); }
+  .nav-links { display: flex; gap: 28px; align-items: center; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--text-sub);
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+  .nav-btn:hover { background: var(--accent-dark); }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 72px 40px 48px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 44px;
+    line-height: 1.15;
+    color: var(--accent-dark);
+    margin-bottom: 16px;
+    letter-spacing: -1px;
+  }
+  .hero p {
+    font-size: 17px;
+    color: var(--text-sub);
+    line-height: 1.6;
+    margin-bottom: 36px;
+  }
+
+  /* SEARCH */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    max-width: 580px;
+    margin: 0 auto 20px;
+  }
+  .search-bar input {
+    flex: 1;
+    padding: 14px 20px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: inherit;
+    background: var(--card);
+    transition: border 0.2s;
+    outline: none;
+  }
+  .search-bar input:focus { border-color: var(--accent); }
+  .search-bar button {
+    padding: 14px 28px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s;
+  }
+  .search-bar button:hover { background: var(--accent-dark); }
+
+  /* FILTERS */
+  .filters {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 48px;
+  }
+  .filter-btn {
+    padding: 8px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 20px;
+    background: var(--card);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-sub);
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent);
+    background: var(--accent-light);
+    color: var(--accent-dark);
+  }
+
+  /* STATS */
+  .stats {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+  .stat {
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .stat-label {
+    font-size: 13px;
+    color: var(--text-sub);
+    margin-top: 4px;
+  }
+
+  /* CENTER GRID */
+  .section-title {
+    max-width: 1100px;
+    margin: 0 auto 24px;
+    padding: 0 40px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .grid {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    cursor: pointer;
+    position: relative;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-3px);
+  }
+  .card-img {
+    height: 160px;
+    background: linear-gradient(135deg, var(--accent-light), #B7E4C7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-img .icon {
+    font-size: 48px;
+    opacity: 0.5;
+  }
+  .card-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+  .card-body { padding: 20px; }
+  .card-city {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+  .card-name {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--text);
+    line-height: 1.3;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-sub);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  /* COURSE TAGS */
+  .courses-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-sub);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .tag {
+    padding: 5px 12px;
+    background: var(--tag-bg);
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  /* PRICE & INFO ROW */
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+  .price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent-dark);
+  }
+  .price span {
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-sub);
+  }
+  .rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .star { color: #E5A100; }
+
+  /* CENTER DETAIL MODAL */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 18px;
+    max-width: 640px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: var(--tag-bg);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    color: var(--text);
+  }
+  .modal-header {
+    height: 180px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    display: flex;
+    align-items: flex-end;
+    padding: 24px;
+    color: white;
+  }
+  .modal-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    line-height: 1.2;
+  }
+  .modal-content { padding: 28px; }
+  .modal-info {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+  .modal-info-item {
+    font-size: 13px;
+    color: var(--text-sub);
+  }
+  .modal-info-item strong {
+    color: var(--text);
+    display: block;
+    margin-bottom: 2px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .modal-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--text);
+  }
+  .course-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .course-row:last-child { border-bottom: none; }
+  .course-name { font-size: 14px; font-weight: 500; }
+  .course-detail {
+    font-size: 12px;
+    color: var(--text-sub);
+    margin-top: 2px;
+  }
+  .course-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .modal-contact {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--accent-light);
+    border-radius: 10px;
+  }
+  .modal-contact p {
+    font-size: 13px;
+    color: var(--accent-dark);
+    margin-bottom: 4px;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 40px;
+    font-size: 13px;
+    color: var(--text-sub);
+    border-top: 1px solid var(--border);
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 48px 20px 32px; }
+    .hero h1 { font-size: 30px; }
+    .grid { padding: 0 20px 60px; grid-template-columns: 1fr; }
+    .search-bar { flex-direction: column; }
+    .stats { gap: 20px; }
+    .stat-num { font-size: 24px; }
+    .modal-header h2 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">Edu<span>TJ</span></div>
+  <div class="nav-links">
+    <a href="#">Browse</a>
+    <a href="#">Cities</a>
+    <a href="#">About</a>
+    <button class="nav-btn">For Centers</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1>Every Course in Tajikistan. One Place.</h1>
+  <p>Find the right educational center, compare courses and prices, and start learning today.</p>
+  <div class="search-bar">
+    <input type="text" id="searchInput" placeholder="Search courses, centers, or subjects..." oninput="filterCards()">
+    <button>Search</button>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('sat', this)">SAT Prep</button>
+    <button class="filter-btn" onclick="setFilter('english', this)">English</button>
+    <button class="filter-btn" onclick="setFilter('coding', this)">Coding</button>
+    <button class="filter-btn" onclick="setFilter('math', this)">Mathematics</button>
+    <button class="filter-btn" onclick="setFilter('design', this)">Design</button>
+    <button class="filter-btn" onclick="setFilter('business', this)">Business</button>
+  </div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="stat-num">42</div><div class="stat-label">Centers</div></div>
+  <div class="stat"><div class="stat-num">180+</div><div class="stat-label">Courses</div></div>
+  <div class="stat"><div class="stat-num">8</div><div class="stat-label">Cities</div></div>
+</div>
+
+<div class="section-title">Educational Centers</div>
+
+<div class="grid" id="cardGrid"></div>
+
+<div class="modal-overlay" id="modal" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-header" id="modalHeader"><h2 id="modalTitle"></h2></div>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<footer>EduTJ &mdash; Connecting learners with the best educational centers across Tajikistan</footer>
+
+<script>
+const centers = [
+  {
+    name: "Intellect Academy",
+    city: "Dushanbe",
+    desc: "Leading SAT and university prep center with experienced international tutors.",
+    badge: "Top Rated",
+    rating: 4.8,
+    tags: ["sat", "english", "math"],
+    courses: [
+      { name: "SAT Full Course", duration: "3 months", price: "2,500 TJS" },
+      { name: "IELTS Preparation", duration: "2 months", price: "1,800 TJS" },
+      { name: "Math Olympiad Prep", duration: "4 months", price: "2,000 TJS" },
+      { name: "Academic English", duration: "2 months", price: "1,200 TJS" }
+    ],
+    phone: "+992 44 600 1234",
+    address: "Rudaki Ave 105, Dushanbe",
+    hours: "Mon–Sat, 9:00–18:00"
+  },
+  {
+    name: "TechBridge Academy",
+    city: "Dushanbe",
+    desc: "Modern coding school offering Python, web development, and data science.",
+    badge: "New",
+    rating: 4.6,
+    tags: ["coding", "design"],
+    courses: [
+      { name: "Python Fundamentals", duration: "2 months", price: "1,500 TJS" },
+      { name: "Web Development", duration: "4 months", price: "3,200 TJS" },
+      { name: "Data Science Intro", duration: "3 months", price: "2,800 TJS" },
+      { name: "UI/UX Design", duration: "2 months", price: "2,000 TJS" }
+    ],
+    phone: "+992 93 555 7890",
+    address: "Ismoili Somoni St 42, Dushanbe",
+    hours: "Mon–Fri, 10:00–20:00"
+  },
+  {
+    name: "Khorog Learning Hub",
+    city: "Khorog",
+    desc: "Community-driven center focused on English, IT skills, and youth development in GBAO.",
+    badge: null,
+    rating: 4.5,
+    tags: ["english", "coding", "sat"],
+    courses: [
+      { name: "English for Beginners", duration: "3 months", price: "800 TJS" },
+      { name: "Computer Basics & IT", duration: "2 months", price: "600 TJS" },
+      { name: "SAT Preparation", duration: "3 months", price: "1,500 TJS" },
+      { name: "Python for Students", duration: "2 months", price: "1,000 TJS" }
+    ],
+    phone: "+992 93 123 4567",
+    address: "Main Street 15, Khorog",
+    hours: "Mon–Sat, 9:00–17:00"
+  },
+  {
+    name: "Silk Road Business School",
+    city: "Khujand",
+    desc: "Focused on entrepreneurship, business management, and digital marketing.",
+    badge: null,
+    rating: 4.3,
+    tags: ["business", "english"],
+    courses: [
+      { name: "Business Management", duration: "3 months", price: "2,200 TJS" },
+      { name: "Digital Marketing", duration: "2 months", price: "1,800 TJS" },
+      { name: "Accounting Basics", duration: "2 months", price: "1,400 TJS" },
+      { name: "Business English", duration: "2 months", price: "1,200 TJS" }
+    ],
+    phone: "+992 92 777 3456",
+    address: "Lenin St 88, Khujand",
+    hours: "Mon–Fri, 9:00–18:00"
+  },
+  {
+    name: "Future Coders",
+    city: "Dushanbe",
+    desc: "Youth-focused coding bootcamp teaching mobile app development and game design.",
+    badge: "Popular",
+    rating: 4.7,
+    tags: ["coding", "design"],
+    courses: [
+      { name: "Mobile App Development", duration: "4 months", price: "3,500 TJS" },
+      { name: "Game Design with Unity", duration: "3 months", price: "2,800 TJS" },
+      { name: "JavaScript & React", duration: "3 months", price: "2,600 TJS" },
+      { name: "Graphic Design", duration: "2 months", price: "1,600 TJS" }
+    ],
+    phone: "+992 90 222 8899",
+    address: "Ayni St 14, Dushanbe",
+    hours: "Mon–Sat, 10:00–19:00"
+  },
+  {
+    name: "Dushanbe Math Center",
+    city: "Dushanbe",
+    desc: "Specialized in mathematics from school level to olympiad preparation.",
+    badge: null,
+    rating: 4.4,
+    tags: ["math", "sat"],
+    courses: [
+      { name: "School Math (Grades 7–11)", duration: "Ongoing", price: "900 TJS/mo" },
+      { name: "SAT Math Section", duration: "2 months", price: "1,600 TJS" },
+      { name: "Math Olympiad Training", duration: "5 months", price: "2,200 TJS" },
+      { name: "University Entrance Prep", duration: "3 months", price: "1,800 TJS" }
+    ],
+    phone: "+992 44 700 5566",
+    address: "Bokhtar St 33, Dushanbe",
+    hours: "Mon–Sat, 8:00–18:00"
+  }
+];
+
+const tagLabels = {
+  sat: "SAT Prep", english: "English", coding: "Coding",
+  math: "Mathematics", design: "Design", business: "Business"
+};
+
+let currentFilter = 'all';
+
+function renderCards() {
+  const grid = document.getElementById('cardGrid');
+  const search = document.getElementById('searchInput').value.toLowerCase();
+
+  const filtered = centers.filter(c => {
+    const matchFilter = currentFilter === 'all' || c.tags.includes(currentFilter);
+    const matchSearch = search === '' ||
+      c.name.toLowerCase().includes(search) ||
+      c.city.toLowerCase().includes(search) ||
+      c.tags.some(t => tagLabels[t].toLowerCase().includes(search)) ||
+      c.courses.some(cr => cr.name.toLowerCase().includes(search));
+    return matchFilter && matchSearch;
+  });
+
+  grid.innerHTML = filtered.map((c, i) => `
+    <div class="card" onclick="openModal(${centers.indexOf(c)})">
+      <div class="card-img">
+        <div class="icon">&#127891;</div>
+        ${c.badge ? `<div class="card-badge">${c.badge}</div>` : ''}
+      </div>
+      <div class="card-body">
+        <div class="card-city">${c.city}</div>
+        <div class="card-name">${c.name}</div>
+        <div class="card-desc">${c.desc}</div>
+        <div class="courses-label">Courses</div>
+        <div class="tags">
+          ${c.tags.map(t => `<span class="tag">${tagLabels[t]}</span>`).join('')}
+        </div>
+        <div class="card-footer">
+          <div class="price">From ${c.courses[0].price} <span>/ course</span></div>
+          <div class="rating"><span class="star">&#9733;</span> ${c.rating}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openModal(index) {
+  const c = centers[index];
+  document.getElementById('modalTitle').textContent = c.name;
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-info">
+      <div class="modal-info-item"><strong>City</strong>${c.city}</div>
+      <div class="modal-info-item"><strong>Hours</strong>${c.hours}</div>
+      <div class="modal-info-item"><strong>Rating</strong><span class="star">&#9733;</span> ${c.rating}</div>
+    </div>
+    <p style="font-size:14px;color:var(--text-sub);margin-bottom:24px;line-height:1.6">${c.desc}</p>
+    <div class="modal-section-title">Courses & Prices</div>
+    ${c.courses.map(cr => `
+      <div class="course-row">
+        <div>
+          <div class="course-name">${cr.name}</div>
+          <div class="course-detail">${cr.duration}</div>
+        </div>
+        <div class="course-price">${cr.price}</div>
+      </div>
+    `).join('')}
+    <div class="modal-contact">
+      <p><strong>Phone:</strong> ${c.phone}</p>
+      <p><strong>Address:</strong> ${c.address}</p>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+}
+
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCards();
+}
+
+function filterCards() { renderCards(); }
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+renderCards();
+</script>
+</body>
+</html>
